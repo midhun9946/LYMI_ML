@@ -12,11 +12,11 @@ public class DataPreProcessing {
     MongoDBConnector connector = new MongoDBConnector(host, port, databaseName, collectionName);
     List<Double> cpuUtilization = connector.getCPUUtilization();
     List<Double> timestamps = connector.getTimestamps();
-    List<Double> cpuTemperature=connector.getCPUtemperature();
+ //   List<Double> cpuTemperature=connector.getCPUtemperature();
 
-    System.out.println(cpuUtilization);
-    System.out.println(timestamps);
-    System.out.println(cpuTemperature);
+    //System.out.println(cpuUtilization);
+   // System.out.println(timestamps);
+   // System.out.println(cpuTemperature);
 
     LinearRegressionModel linearRegressionModel=new LinearRegressionModel();
     linearRegressionModel.buildRegressionModel(timestamps,cpuUtilization);

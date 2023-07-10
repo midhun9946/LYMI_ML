@@ -25,11 +25,42 @@ public class LinearRegressionModel {
 
     // Build a linear regression model
 
-  public void buildRegressionModel(List<Double>  timestampData,List<Double> cpuUtilizationData){
+  public void buildRegressionModel(List<Double> timestampData,List<Double> cpuUtilizationData){
     SimpleRegression regression = new SimpleRegression();
     for (int i = 0; i < timestampData.size(); i++) {
       regression.addData(timestampData.get(i), cpuUtilizationData.get(i));
     }
+    // Find the span of 10 continuous time samples with the least CPU utilization
+    int minStartIndex = 0;
+    double minCumulativeUtilization = Double.MAX_VALUE;
+
+    for (int i = 0; i <= cpuUtilizationData.size() - 10; i++) {
+      double cumulativeUtilization = 0;
+      double averageCumulativeUtilization=0;
+
+      for (int j = i; j < i + 10; j++) {
+        double timeStamp=timestampData.get(j);
+        double predictedUtilization = regression.predict(timeStamp);
+        System.out.println("predictedUtilization ::" + predictedUtilization);
+        cumulativeUtilization += predictedUtilization;
+        averageCumulativeUtilization=cumulativeUtilization/10;
+        System.out.println("cumulativeUtilization ::" + cumulativeUtilization);
+        System.out.println("averageCumulativeUtilization ::" + averageCumulativeUtilization);
+      }
+
+      if (averageCumulativeUtilization < minCumulativeUtilization) {
+        minCumulativeUtilization = averageCumulativeUtilization;
+         minStartIndex = i;
+      }
+    }
+
+    // Print the span of 10 continuous time samples with the least CPU utilization
+    int minEndIndex = minStartIndex + 9;
+    System.out.println("Span with the least CPU utilization: " + timestampData.get(minStartIndex) + " to " + timestampData.get(minEndIndex));
+
+    //
+
+
 
     // Print the regression equation (y = mx + c)
     double slope = regression.getSlope();
@@ -38,6 +69,10 @@ public class LinearRegressionModel {
 
     // Plot the CPU utilization against timestamp
     plotData(timestampData, cpuUtilizationData, regression);
+
+    // LEAST SAMPLES
+   // getMinimumCpuUtilizedSampleTimePeriod(cpuUtilizationData, regression);
+
   }
 
   private static void plotData(List<Double> xData, List<Double> yData, SimpleRegression regression) {
@@ -63,5 +98,29 @@ public class LinearRegressionModel {
     ChartFrame frame = new ChartFrame("Linear Regression", plot);
     frame.pack();
     frame.setVisible(true);
+ }
+ public void getMinimumCpuUtilizedSampleTimePeriod(List<Double> cpuUtilizationData,SimpleRegression regression){
+    double startInterval=0;
+    double endInterval=0;
+    double minUtalization=Double.MAX_VALUE;
+    double numberOfSamples=10;
+
+    for (double i=0;i<cpuUtilizationData.size();i++){
+      double meanAverageForPrecisedSamples=0;
+      double tempPredictedUtilization=0;
+      endInterval=i+numberOfSamples;
+      for (startInterval=i;startInterval<endInterval;startInterval++ ) {
+        double predictedUtilization = regression.predict(i);
+        System.out.println("predictedUtilization ::" + predictedUtilization);
+            tempPredictedUtilization+=predictedUtilization;
+            meanAverageForPrecisedSamples=(tempPredictedUtilization/numberOfSamples);
+        System.out.println("meanAverageForPrecisedSamples ::" + meanAverageForPrecisedSamples);
+        if (meanAverageForPrecisedSamples < minUtalization) {
+          minUtalization = meanAverageForPrecisedSamples;
+        }
+      }
+      // Print the time span with the least CPU utilization
+      System.out.println("Time span with the least CPU utilization: " + minUtalization );
+    }
  }
 }

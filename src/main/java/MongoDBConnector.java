@@ -28,7 +28,7 @@ public class MongoDBConnector {
       while (cursor.hasNext()) {
         Document document = cursor.next();
         double utilization = document.getDouble("cpuutilization_server");
-        System.out.println("Utilizatioon ::" +utilization);
+        //System.out.println("Utilizatioon ::" +utilization);
         cpuUtilization.add(utilization);
       }
     } finally {
@@ -50,7 +50,7 @@ public class MongoDBConnector {
         String[] timeComponents=timestamp.split(" ");
         String[] minutesHour=timeComponents[1].split(":");
         Double time=Double.valueOf(minutesHour[0]+"."+minutesHour[1]);
-        System.out.println("time ::" + time);
+        System.out.println("timeStamp in double ::" + time);
         timestamps.add(time);
       }
     } finally {
